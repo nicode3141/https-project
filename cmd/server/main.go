@@ -1,10 +1,18 @@
 package main
 
-import "fmt"
-import "net/http"
+import (
+	"https-project/internal/server"
+	"log"
+)
 
 func main(){
-	fmt.Printf("Hello world!")
-}
+	srv := server.New()
 
-func New() 
+	log.Println("Server listening on port 8080 localhost")
+
+	err := srv.ListenAndServe();
+
+	if(err != nil) {
+		log.Fatal(err);
+	}
+}

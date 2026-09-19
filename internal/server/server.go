@@ -7,7 +7,7 @@ import (
 
 type Server struct {
 	httpServer *http.Server
-	template *template.Template
+	templates *template.Template
 }
 
 func New() *Server {
@@ -20,7 +20,36 @@ func New() *Server {
 			http.NotFound(w, r);
 			return;
 		}
+
+		props := struct {
+			Title string
+			Name string
+		}{
+			Title: "Hi",
+			Name: "Hi",
+		}
+
+		err := templates.ExecuteTemplate(w, "index.html", props)
+
+		if(err != nil){
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
 	})
 
-	return nil;
+	static := http.FileServer(http.Dir("web/static"))
+
+	mux.Handle("/static/", http.StripPrefix("/static/", static))
+
+
+	return &Server{
+		templates: templates,
+		httpServer: &http.Server{
+			Addr: ":8080",
+			Handler: mux,
+		},
+	};
+}
+
+func (s *Server) ListenAndServe() error {
+	return s.httpServer.ListenAndServe()
 }
