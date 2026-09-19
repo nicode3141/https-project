@@ -1,0 +1,10 @@
+services:
+  website:
+    build:
+      context: .
+      dockerfile: dockerfile
+
+    container_name: https-project
+
+    ports:
+      - "8080:8080"
